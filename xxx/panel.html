@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dodaj Folder do GitHub</title>
+</head>
+<body>
+    <h2>Dodaj nowy folder do GitHub</h2>
+    <input type="text" id="folderName" placeholder="Nazwa folderu">
+    <button onclick="createFolder()">Dodaj Folder</button>
+
+    <script>
+        async function createFolder() {
+            const folderName = document.getElementById("folderName").value;
+            if (!folderName) {
+                alert("Podaj nazwę folderu!");
+                return;
+            }
+
+            const owner = "xeosell"; // Zamień na swoją nazwę użytkownika
+            const repo = "fhfh";   // Zamień na nazwę repozytorium
+            const token = "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"; // Wprowadź swój token (BEZPIECZNIEJ PRZECHOWYWAĆ GO PO STRONIE SERWERA!)
+            const path = `${folderName}/.gitkeep`; // Tworzymy pusty plik, aby GitHub wykrył folder
+            const content = btoa(""); // Pusty plik
+
+            const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+
+            const response = await fetch(url, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `token ${token}`,
+                    "Accept": "application/vnd.github.v3+json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: `Dodano folder: ${folderName}`,
+                    content: content
+                })
+            });
+
+            if (response.ok) {
+                alert(`Folder "${folderName}" został dodany do GitHub!`);
+            } else {
+                alert("Wystąpił błąd!");
+                console.log(await response.json());
+            }
+        }
+    </script>
+</body>
+</html>
